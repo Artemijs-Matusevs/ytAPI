@@ -7,6 +7,10 @@
     <title>Prototype With YT-API</title>
 </head>
 <body>
-    <h1> HELLO WORLD </h1>
+    <form action="/retrieveVideo" method="POST">
+        <p> Retrieve subtitles from a YouTube video link </p>
+        <input class="input-text" type="text" name="videoURL" placeholder="Youtube Link URL:" required>
+        <input class="input-submit" type="submit" value="Submit">
+    </form>
 </body>
 </html>

@@ -1,3 +1,28 @@
-h1{
-    color: red;
+form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 25px;
+}
+
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+}
+
+p{
+    font-size: 40px;
+    font-style: italic;
+}
+
+/* FORM INPUTS STYLING */
+.input-text{
+    height: 20px;
+    width: 500px;
+    padding: 10px;
 }
