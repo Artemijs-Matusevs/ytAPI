@@ -5,6 +5,7 @@ import env from "dotenv";
 import GoogleStrategy from "passport-google-oauth2";
 import passport from "passport";
 import session from "express-session";
+import axios from "axios";
 
 const app = express();
 const port = 3000;
@@ -13,7 +14,7 @@ const port = 3000;
 env.config();
 //console.log(process.env.API_KEY);
 
-//Set up the express session
+//Set up the express session config
 app.use(
     session({
         secret: process.env.SESSION_SECRET,
@@ -29,6 +30,9 @@ app.use(passport.session());
 app.use(express.static("public")); //Set up the public static files folder
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+
+
 //Root endpoint
 app.get("/", (req, res) => {
     console.log(req.user);
@@ -37,14 +41,29 @@ app.get("/", (req, res) => {
 
 
 //POSTING video link from front-end
-app.post("/retrieveVideo", (req, res) => {
+app.post("/retrieveVideo", async (req, res) => {
     const videoURL = req.body.videoURL; //Get hold of the video link from the incoming request
     console.log(videoURL);
+
+    //Send Axios API request to the YouTube Data API
+    try{
+        const response = await axios.get("https://youtube.googleapis.com/youtube/v3/captions/AUieDabLVsuFGqu9UVE1NYAv0x2ugY0E-o5MkICzd9B3s_wT1Jc", {
+            headers: {
+                Authorization: `Bearer ${req.user}`,
+            },
+        });
+        res.json({ data: response.data});
+        } catch (error) {
+            res.status(404).send(error.response.data);
+        }
 })
 
 
 //When user signs in with Google
-app.get("/auth/google", passport.authenticate("google", {scope: ["profile"]}));
+app.get("/auth/google", passport.authenticate("google", {
+    scope: ["profile", "https://www.googleapis.com/auth/youtube.force-ssl"]
+    }
+));
 
 
 app.get(
@@ -65,7 +84,7 @@ passport.use("google", new GoogleStrategy(
     userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
 },
 (acessToken, refreshToken, profile, cb) =>{
-    cb(null, profile);
+    return cb(null, acessToken);
 }))
 
 
