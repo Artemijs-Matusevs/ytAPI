@@ -51,10 +51,33 @@ app.post("/retrieveVideo", async (req, res) => {
     const parsedURL = new URL(videoURL); //Process the URL and extract query parameters to get the video ID
     const queryParams = new URLSearchParams(parsedURL.search);
     const videoId = queryParams.get('v');
-    console.log(videoId);
+    //console.log(videoId);
+
+    //Using the video ID, make a request to the youtube API to get hold of all avaliable caption tracks
+    try{
+        const response = await axios.get(`https://youtube.googleapis.com/youtube/v3/captions?videoId=${videoId}&key=${process.env.API_KEY}`);
+        const subtitlesID = response.data.items[0].id;
+
+        //Download the subtitles
+        try{
+            const response = await axios.get(`https://youtube.googleapis.com/youtube/v3/captions/${subtitlesID}`, {
+                headers: {
+                    Authorization: `Bearer ${req.user}`,
+                },
+            });
+            res.json({ data: response.data});
+
+            } catch (error) {
+                res.status(404).send(error.response.data);
+            }
+
+    } catch (error) {
+        res.status(404).sendStatus(error.response.data);
+    }
+
 
     //Send Axios API request to the YouTube Data API
-    try{
+    /*try{
         const response = await axios.get("https://youtube.googleapis.com/youtube/v3/captions/AUieDabLVsuFGqu9UVE1NYAv0x2ugY0E-o5MkICzd9B3s_wT1Jc", {
             headers: {
                 Authorization: `Bearer ${req.user}`,
@@ -63,7 +86,7 @@ app.post("/retrieveVideo", async (req, res) => {
         res.json({ data: response.data});
         } catch (error) {
             res.status(404).send(error.response.data);
-        }
+        }*/
 })
 
 
