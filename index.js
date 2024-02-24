@@ -36,7 +36,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //Root endpoint
 app.get("/", (req, res) => {
     console.log(req.user);
-    res.render("index.ejs")
+    res.render("signIn.ejs")
 })
 
 
