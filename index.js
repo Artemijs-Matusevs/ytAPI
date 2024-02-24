@@ -48,7 +48,10 @@ app.get("/dashboard", (req, res) => {
 //POSTING video link from front-end
 app.post("/retrieveVideo", async (req, res) => {
     const videoURL = req.body.videoURL; //Get hold of the video link from the incoming request
-    console.log(videoURL);
+    const parsedURL = new URL(videoURL); //Process the URL and extract query parameters to get the video ID
+    const queryParams = new URLSearchParams(parsedURL.search);
+    const videoId = queryParams.get('v');
+    console.log(videoId);
 
     //Send Axios API request to the YouTube Data API
     try{
