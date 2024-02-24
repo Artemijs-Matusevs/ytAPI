@@ -35,8 +35,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //Root endpoint
 app.get("/", (req, res) => {
-    console.log(req.user);
+    //console.log(req.user);
     res.render("signIn.ejs")
+})
+
+//Dashboard
+app.get("/dashboard", (req, res) => {
+    res.render("index.ejs");
 })
 
 
@@ -66,11 +71,22 @@ app.get("/auth/google", passport.authenticate("google", {
 ));
 
 
+//Sign out
+app.get("/logout", (req, res) => {
+    req.logout(function (err) {
+        if (err) {
+            return next(err);
+        }
+        res.redirect("/");
+    })
+})
+
+
 app.get(
     "/auth/google/retrieveVideo",
     passport.authenticate("google", {
-        successRedirect: "/",
-        failureRedirect: "/nothing",
+        successRedirect: "/dashboard",
+        failureRedirect: "/",
     })
 )
 
